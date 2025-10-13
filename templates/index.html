@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename = 'img/logo.png') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мониторинг АКБ</title>
+</head>
+<body>
+    <div class="container">
+        <h1 class="main-title">Сервис мониторинга аккумуляторов</h1>
+
+        <!--Устройства-->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">Устройства</h2>
+                <button class="add-button">Добавить устройство</button>
+            </div>
+            <div class="cards-container devices-container">
+
+            </div>
+        </section>
+
+        <!--АКБ-->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">Аккумуляторы</h2>
+                <button class="add-button">Добавить АКБ</button>
+            </div>
+            <div class="cards-container batteries-container">
+
+            </div>
+        </section>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

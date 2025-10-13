@@ -1,0 +1,668 @@
+openapi: 3.0.3
+info:
+  title: Мониторинг АКБ API
+  version: 1.0.0
+
+paths:
+  /battery:
+    get:
+      tags:
+        - Batteries
+      summary: Получить список всех АКБ
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Battery'
+                  count:
+                    type: integer
+                    example: 1
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /battery/{battery_id}:
+    get:
+      tags:
+        - Batteries
+      summary: Получить информацию об АКБ по ID
+      parameters:
+        - name: battery_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Battery'
+        '404':
+          description: АКБ не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      tags:
+        - Batteries
+      summary: Обновить данные АКБ
+      description: |
+        При изменении значения capacity автоматически обновляется история изменений емкости.
+        История сохраняет последние 10 записей.
+      parameters:
+        - name: battery_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "АКБ-001"
+                voltage:
+                  type: number
+                  format: float
+                  example: 12.0
+                capacity:
+                  type: number
+                  format: float
+                  example: 85.5
+                lifetime:
+                  type: integer
+                  example: 36
+      responses:
+        '200':
+          description: Данные АКБ успешно обновлены
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Battery'
+                  message:
+                    type: string
+                    example: "Данные АКБ успешно обновлены"
+        '400':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: АКБ не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      tags:
+        - Batteries
+      summary: Удалить АКБ
+      parameters:
+        - name: battery_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: АКБ успешно удалена
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Данные об АКБ были успешно удалены"
+        '404':
+          description: АКБ не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /battery/create_new:
+    post:
+      tags:
+        - Batteries
+      summary: Создать новый АКБ
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - voltage
+                - capacity
+              properties:
+                name:
+                  type: string
+                  example: "АКБ-001"
+                voltage:
+                  type: number
+                  format: float
+                  example: 12.0
+                capacity:
+                  type: number
+                  format: float
+                  example: 85.5
+                lifetime:
+                  type: integer
+                  example: 36
+      responses:
+        '201':
+          description: Новый АКБ успешно создан
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Battery'
+                  message:
+                    type: string
+                    example: "Новый АКБ был успешно создан"
+        '400':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /device:
+    get:
+      tags:
+        - Devices
+      summary: Получить данные всех устройств
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Device'
+                  count:
+                    type: integer
+                    example: 1
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /device/{device_id}:
+    get:
+      tags:
+        - Devices
+      summary: Получить данные устройства по ID
+      parameters:
+        - name: device_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Device'
+        '404':
+          description: Устройство не найдено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      tags:
+        - Devices
+      summary: Обновить устройство
+      parameters:
+        - name: device_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Устройство-1"
+                firmware_version:
+                  type: string
+                  example: "v1.0.0"
+                status:
+                  type: boolean
+                  example: true
+      responses:
+        '200':
+          description: Данные устройства успешно обновлены
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Device'
+                  message:
+                    type: string
+                    example: "Данные устройства были обновлены"
+        '400':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Устройство не найдено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      tags:
+        - Devices
+      summary: Удалить устройство
+      description: При удалении устройства все подключенные АКБ автоматически отключаются
+      parameters:
+        - name: device_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Устройство успешно удалено
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Устройство успешно удалено"
+        '404':
+          description: Устройство не найдено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /device/create_new:
+    post:
+      tags:
+        - Devices
+      summary: Создать новое устройство
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - firmware_version
+              properties:
+                name:
+                  type: string
+                  example: "Устройство-1"
+                firmware_version:
+                  type: string
+                  example: "v1.0.0"
+      responses:
+        '201':
+          description: Новое устройство успешно создано
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Device'
+                  message:
+                    type: string
+                    example: "Новое устройство успешно создано"
+        '400':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /device/{device_id}/connect_battery/{battery_id}:
+    post:
+      tags:
+        - Device Operations
+      summary: Подключить АКБ к устройству
+      description: К одному устройству можно подключить не более 5 АКБ одновременно
+      parameters:
+        - name: device_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: battery_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: АКБ успешно подключен к устройству
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "АКБ АКБ-001 подключено к Устройство-1"
+                  data:
+                    type: object
+                    properties:
+                      device:
+                        $ref: '#/components/schemas/Device'
+                      battery:
+                        $ref: '#/components/schemas/Battery'
+        '400':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Устройство или АКБ не найдены
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /device/{device_id}/delete_battery/{battery_id}:
+    delete:
+      tags:
+        - Device Operations
+      summary: Отключить АКБ от устройства
+      parameters:
+        - name: device_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: battery_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: АКБ успешно отключен от устройства
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "АКБ АКБ-001 отключено от Устройство-1"
+                  data:
+                    type: object
+                    properties:
+                      device:
+                        $ref: '#/components/schemas/Device'
+                      battery:
+                        $ref: '#/components/schemas/Battery'
+        '400':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Устройство или АКБ не найдены
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    Battery:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "АКБ-001"
+        voltage:
+          type: number
+          format: float
+          example: 12.0
+        capacity:
+          type: number
+          format: float
+          example: 85.5
+        lifetime:
+          type: integer
+          nullable: true
+          example: 36
+        device_id:
+          type: integer
+          nullable: true
+          example: 1
+        capacity_history:
+          type: array
+          items:
+            type: object
+            properties:
+              capacity:
+                type: number
+                format: float
+              timestamp:
+                type: string
+                format: date-time
+          example: []
+          description: История изменений емкости АКБ
+
+    Device:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Устройство-1"
+        firmware_version:
+          type: string
+          example: "v1.0.0"
+        status:
+          type: boolean
+          example: true
+        batteries_count:
+          type: integer
+          example: 1
+        batteries:
+          type: array
+          items:
+            $ref: '#/components/schemas/Battery'
+
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          example: "Error message description"
+
+  responses:
+    NotFound:
+      description: Ресурс не найден
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    ServerError:
+      description: Внутренняя ошибка сервера
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+  parameters:
+    BatteryId:
+      name: battery_id
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: ID аккумуляторной батареи
+
+    DeviceId:
+      name: device_id
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: ID устройства
+
+tags:
+  - name: Batteries
+    description: Операции с АКБ
+  - name: Devices
+    description: Операции с устройствами
+  - name: Device Operations
+    description: Операции подключения/отключения АКБ к устройствам
