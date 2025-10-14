@@ -530,8 +530,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                                                     <span>Напряжение: ${battery.voltage || 'N/A'}В</span>
                                                     <span>Срок службы: ${battery.lifetime || 'N/A'} мес.</span>
                                                 </div>
-                                                
-                                                <!-- ИСТОРИЯ ИЗМЕНЕНИЙ -->
                                                 <div class="capacity-history">
                                                     <strong>История изменений:</strong>
                                                         ${history.length > 0 ? 

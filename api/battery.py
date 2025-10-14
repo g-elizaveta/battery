@@ -98,7 +98,7 @@ def update_battery(battery_id):
         if 'voltage' in data and data['voltage'] is None:
             return jsonify({
                 'success': False,
-                'error': 'Поле наминальное напряжение не может быть пустым'
+                'error': 'Поле номинальное напряжение не может быть пустым'
             }), 400
         
         if 'capacity' in data and data['capacity'] is None:
