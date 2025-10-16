@@ -46,6 +46,12 @@ def create_device():
                 'success': False,
                 'error': 'Укажите название и версию прошивки для устройства'
             }), 400
+        
+        if len(data['name']) > 100 or len(data['firmware_version']) > 50:
+            return jsonify({
+                'success': False,
+                'error': 'Превышен лимит количества символов в названии либо версии устройства'
+            }), 400
 
         if Device.query.filter_by(name=data['name']).first():
             return jsonify({
@@ -88,6 +94,11 @@ def update_device(device_id):
                 return jsonify({
                     'success': False,
                     'error': 'Устройство с таким названием уже существует'
+                }), 400
+            if len(data['name']) > 100 or len(data['firmware_version']) > 50:
+                return jsonify({
+                    'success': False,
+                    'error': 'Превышен лимит количества символов в названии либо версии устройства'
                 }), 400
             device.name = data['name']
         

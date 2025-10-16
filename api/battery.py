@@ -49,6 +49,12 @@ def create_battery():
                     'success': False,
                     'error': f'Поле {field} обязательно для заполнения'
                 }), 400
+            
+        if len(data['name']) > 100:
+            return jsonify({
+                    'success': False,
+                    'error': f'Название АКБ не должно превышать 100 символов'
+                }), 400
 
         initial_capacity = float(data['capacity'])
         capacity_history = [{
@@ -93,6 +99,11 @@ def update_battery(battery_id):
             return jsonify({
                 'success': False,
                 'error': 'Название АКБ не может быть пустым'
+            }), 400
+        elif len(data['name']) > 100:
+            return jsonify({
+                'success': False,
+                'error': f'Название АКБ не должно превышать 100 символов'
             }), 400
         
         if 'voltage' in data and data['voltage'] is None:
