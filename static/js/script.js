@@ -81,14 +81,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function createBatteryCard(battery) {
-        const chargeClass = getChargeClass(battery.capacity);
         
         const card = document.createElement('div');
         card.className = 'card';
         card.innerHTML = `
             <div class="card-content">
                 <h3>${escapeHtml(battery.name)}</h3>
-                <p class="${chargeClass}">Остаточная емкость: ${battery.capacity || 0} Ач</p>
+                <p>Остаточная емкость: ${battery.capacity || 0} Ач</p>
                 <p>Напряжение: ${battery.voltage || 'N/A'}В</p>
                 <p>Срок службы: ${battery.lifetime || 'N/A'} мес.</p>
                 <div class="card-actions">
@@ -453,12 +452,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             .replace(/>/g, "&gt;")
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;") : '';
-    }
-
-    function getChargeClass(capacity) {
-        if (capacity >= 70) return 'charge-high';
-        if (capacity >= 30) return 'charge-medium';
-        return 'charge-low';
     }
 
     function showError(message) {
